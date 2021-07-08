@@ -1,4 +1,5 @@
 ﻿using AESEncryption;
+using GlobalMethods;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace PenyDropAPI_3._0.Models
 {
     public class AcValidateClass
     {
-        public DataTable AccountVal_Kotak(string MandateId, string AcNo, string IFSC, string Appid, string APIUrl, string APIKey, string APIBankName, string UserId, string EntityID,string TraceNumber)
+        public DataTable AccountVal_Kotak(string MandateId, string AcNo, string IFSC, string Appid, string APIUrl, string APIKey, string APIBankName, string UserId, string EntityID, string TraceNumber)
         {
             DataSet ds_Response = null;
             try
@@ -77,60 +78,62 @@ namespace PenyDropAPI_3._0.Models
 
                     string webData = "";
 
-                    //if (IsLocal)
-                    //{
-                    //    if (ActivityID == 0)
-                    //    { webData = "6220|24082018120636|YK17|wIw4GP24082018122440|KPY00|Successful Transaction|823612654816|KMB0000037731||Avinash Gupta|1658580580"; }
-                    //    else
-                    //    {
-                    //        if (MandateId % 5 == 0)
-                    //        {
-                    //            webData = "6220|24082018120636|YK17|wIw4GP24082018122440|KPY00|Successful Transaction|823612654816|KMB0000037731||Avinash Gupta|1658580580";
-                    //        }
-                    //        else if (MandateId % 2 == 0)
-                    //        {
-                    //            webData = "6220|24082018120636|YK17|wIw4GP24082018122440|KPYM5|Account Closed|823612654816|KMB0000037731||Avinash Gupta|1658580580";
-                    //        }
-                    //        else if (MandateId % 3 == 0)
-                    //        {
-                    //            webData = "6220|24082018120636|YK17|wIw4GP24082018122440|KPYM1|Invalid A/c Number or IFSC Code|823612654816|KMB0000037731||Avinash Gupta|1658580580";
-                    //        }
-                    //        else
-                    //        { webData = "6220|24082018120636|YK17|wIw4GP24082018122440|KPYM1|Invalid A/c Number or IFSC Code|823612654816|KMB0000037731||Avinash Gupta|1658580580"; }
-                    //    }
-                    //}
+                    if (GlobalClass.IsLocal)
+                    {
+                        //if (ActivityID == 0)
+                        //{
+                        webData = "6220|24082018120636|YK17|wIw4GP24082018122440|KPY00|Successful Transaction|823612654816|KMB0000037731||Fateh Singh|1658580580";
+                    }
                     //else
                     //{
-                    //System.Net.WebClient wc = new System.Net.WebClient();
-                    //webData = wc.DownloadString(ActionUrl);
-                    var inputAPI = new
+                    //    if (MandateId % 5 == 0)
+                    //    {
+                    //        webData = "6220|24082018120636|YK17|wIw4GP24082018122440|KPY00|Successful Transaction|823612654816|KMB0000037731||Avinash Gupta|1658580580";
+                    //    }
+                    //    else if (MandateId % 2 == 0)
+                    //    {
+                    //        webData = "6220|24082018120636|YK17|wIw4GP24082018122440|KPYM5|Account Closed|823612654816|KMB0000037731||Avinash Gupta|1658580580";
+                    //    }
+                    //    else if (MandateId % 3 == 0)
+                    //    {
+                    //        webData = "6220|24082018120636|YK17|wIw4GP24082018122440|KPYM1|Invalid A/c Number or IFSC Code|823612654816|KMB0000037731||Avinash Gupta|1658580580";
+                    //    }
+                    //    else
+                    //    { webData = "6220|24082018120636|YK17|wIw4GP24082018122440|KPYM1|Invalid A/c Number or IFSC Code|823612654816|KMB0000037731||Avinash Gupta|1658580580"; }
+                    //}
+                    //}
+                    else
                     {
-                        AppID = AESEncryptionClass.EncryptAES(Appid.ToString()),
-                        MandateID = AESEncryptionClass.EncryptAES(MandateId.ToString()),
-                        TransRefrenceNo = AESEncryptionClass.EncryptAES(TraceNumber),
-                        AccountNo = AESEncryptionClass.EncryptAES(AcNo),
-                        IFSC = AESEncryptionClass.EncryptAES(IFSC),
-                        CustomerName = "",
-                        APIKey = AESEncryptionClass.EncryptAES(APIKey),
-                    };
-                    try
-                    {
-                        string inputJson = (new JavaScriptSerializer()).Serialize(inputAPI);
-                        ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2
-                        WebClient client = new WebClient();
-                        client.Headers["Content-type"] = "application/json";
-                        client.Encoding = Encoding.UTF8;
-                        string json = client.UploadString(APIUrl, inputJson);
+                        //System.Net.WebClient wc = new System.Net.WebClient();
+                        //webData = wc.DownloadString(ActionUrl);
+                        var inputAPI = new
+                        {
+                            AppID = AESEncryptionClass.EncryptAES(Appid.ToString()),
+                            MandateID = AESEncryptionClass.EncryptAES(MandateId.ToString()),
+                            TransRefrenceNo = AESEncryptionClass.EncryptAES(TraceNumber),
+                            AccountNo = AESEncryptionClass.EncryptAES(AcNo),
+                            IFSC = AESEncryptionClass.EncryptAES(IFSC),
+                            CustomerName = "",
+                            APIKey = AESEncryptionClass.EncryptAES(APIKey),
+                        };
+                        try
+                        {
+                            string inputJson = (new JavaScriptSerializer()).Serialize(inputAPI);
+                            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2
+                            WebClient client = new WebClient();
+                            client.Headers["Content-type"] = "application/json";
+                            client.Encoding = Encoding.UTF8;
+                            string json = client.UploadString(APIUrl, inputJson);
 
-                        PenyRes resdata = JsonConvert.DeserializeObject<PenyRes>(json);
+                            PenyRes resdata = JsonConvert.DeserializeObject<PenyRes>(json);
 
-                        webData = "6220|" + GMTformattedDateTime + "|" + APIBankName + "|" + TraceNumber + "|" + resdata.ResponseStatusCode + "|" + resdata.ResponseStatusDesc + "|823612654816|" + resdata.BankRefNo + "||" + resdata.RetCustomerName + "|1658580580";
+                            webData = "6220|" + GMTformattedDateTime + "|" + APIBankName + "|" + TraceNumber + "|" + resdata.ResponseStatusCode + "|" + resdata.ResponseStatusDesc + "|823612654816|" + resdata.BankRefNo + "||" + resdata.RetCustomerName + "|1658580580";
 
+                        }
+                        catch (Exception ex)
+                        {
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                    }
-                    // }
 
                     string[] Data = webData.Split('|');
 
