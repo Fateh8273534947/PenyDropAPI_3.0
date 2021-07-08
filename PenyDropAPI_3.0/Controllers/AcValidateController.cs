@@ -110,7 +110,7 @@ namespace PenyDropAPI_3._0.Controllers
                 res.DCLive = Convert.ToString(DSGlobal.Tables[4].Rows[0]["DebitCard"]);
                 res.AdLive = Convert.ToString(DSGlobal.Tables[4].Rows[0]["ALive"]);
                 res.PhLIve = Convert.ToString(DSGlobal.Tables[4].Rows[0]["PLive"]);
-                res.BankReturnCustName = Convert.ToString(dt.Rows[0]["BankReturnCustNme"]);
+                res.CustomerNameAsPerBank = Convert.ToString(dt.Rows[0]["BankReturnCustNme"]);
                 return res;
 
             }

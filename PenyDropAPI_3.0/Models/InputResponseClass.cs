@@ -27,7 +27,7 @@ namespace PenyDropAPI_3._0.Models
         public string AdLive { get; set; }
         public string PhLIve { get; set; }
         public string TrxRef { get; set; }
-        public string BankReturnCustName { get; set; }
+        public string CustomerNameAsPerBank { get; set; }
 
     }
 
