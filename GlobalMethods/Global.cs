@@ -10,7 +10,7 @@ namespace GlobalMethods
     {
 
         public static string connectionString = "Data Source=192.168.40.86;Initial Catalog=QuickZip_Framework48_jQuery351;Integrated Security=False;User ID=ankush;Password=@nkush@123";//local
-        
+        public static bool IsLocal = true;
         public static string ReverseString(string s)
         {
             char[] charArray = s.ToCharArray();
