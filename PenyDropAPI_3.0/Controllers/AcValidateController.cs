@@ -53,7 +53,27 @@ namespace PenyDropAPI_3._0.Controllers
                 res.ResCode = "AccErr003";
                 return res;
             }
-
+            if (ul.CustomerName == null || ul.CustomerName == "")
+            {
+                res.Message = "Mandatory Data blank";
+                res.Status = "Failure";
+                res.ResCode = "AccErr003";
+                return res;
+            }
+            if (ul.CustomerName.Length>40)
+            {
+                res.Message = "Mandatory Data blank";
+                res.Status = "Failure";
+                res.ResCode = "AccErr003";
+                return res;
+            }
+            if (ul.TrxRef.Length > 20)
+            {
+                res.Message = "Mandatory Data blank";
+                res.Status = "Failure";
+                res.ResCode = "AccErr003";
+                return res;
+            }
             string UserId = "";
             string EntityId = "";
             DataSet DSGlobal = GetData.GetSetpData(ClientEncrptionClass.DecryptAESEncEndToEnd(ul.AppID), ClientEncrptionClass.DecryptAESEncEndToEnd(ul.MerchantKey), ul.IFSC, "", ul.ProductId, ul.BranchId, ul.TrxRef);
@@ -101,6 +121,34 @@ namespace PenyDropAPI_3._0.Controllers
             DataTable dt = obj.AccountVal_Kotak(Convert.ToString(DSGlobal.Tables[6].Rows[0][0]), ClientEncrptionClass.DecryptAESEncEndToEnd(ul.BankAc), ul.IFSC, ClientEncrptionClass.DecryptAESEncEndToEnd(ul.AppID), Convert.ToString(DSGlobal.Tables[1].Rows[0]["APIURL"]), Convert.ToString(DSGlobal.Tables[1].Rows[0]["APIKey"]), Convert.ToString(DSGlobal.Tables[1].Rows[0]["APIBankName"]), UserId, EntityId, ul.TrxRef);
             if (dt.Rows.Count > 0)
             {
+                if(ul.CustomerName.Length>20 && Convert.ToString(dt.Rows[0]["BankReturnCustNme"])!="")
+                {
+                    res.Message = "Account Validated and NAME Validation is upto 20 char only incase more than 20 char match first 20 char and take informed decission";
+                    res.Status = "Success";
+                    res.ResCode = "AccRes010";// GetResCode(Convert.ToString(dt.Rows[0]["Description"]));
+                    res.TrxRef = ul.TrxRef;
+                    res.NACHLive = Convert.ToString(DSGlobal.Tables[4].Rows[0]["PLive"]);
+                    res.NBLive = Convert.ToString(DSGlobal.Tables[4].Rows[0]["NetBanking"]);
+                    res.DCLive = Convert.ToString(DSGlobal.Tables[4].Rows[0]["DebitCard"]);
+                    res.AdLive = Convert.ToString(DSGlobal.Tables[4].Rows[0]["ALive"]);
+                    res.PhLIve = Convert.ToString(DSGlobal.Tables[4].Rows[0]["PLive"]);
+                    res.CustomerNameAsPerBank = Convert.ToString(dt.Rows[0]["BankReturnCustNme"]);
+                    return res;
+                }
+                if(ul.CustomerName.ToUpper() != Convert.ToString(dt.Rows[0]["BankReturnCustNme"]).ToUpper())
+                {
+                    res.Message = "Account validated but name mismatch";
+                    res.Status = "Success";
+                    res.ResCode = "AccRes011";// GetResCode(Convert.ToString(dt.Rows[0]["Description"]));
+                    res.TrxRef = ul.TrxRef;
+                    res.NACHLive = Convert.ToString(DSGlobal.Tables[4].Rows[0]["PLive"]);
+                    res.NBLive = Convert.ToString(DSGlobal.Tables[4].Rows[0]["NetBanking"]);
+                    res.DCLive = Convert.ToString(DSGlobal.Tables[4].Rows[0]["DebitCard"]);
+                    res.AdLive = Convert.ToString(DSGlobal.Tables[4].Rows[0]["ALive"]);
+                    res.PhLIve = Convert.ToString(DSGlobal.Tables[4].Rows[0]["PLive"]);
+                    res.CustomerNameAsPerBank = Convert.ToString(dt.Rows[0]["BankReturnCustNme"]);
+                    return res;
+                }
                 res.Message = Convert.ToString(dt.Rows[0]["Description"]);
                 res.Status = "Success";
                 res.ResCode = GetResCode(Convert.ToString(dt.Rows[0]["Description"]));
