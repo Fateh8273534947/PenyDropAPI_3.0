@@ -47,7 +47,7 @@ namespace PenyDropAPI_3._0.Models
         public string TrxRef { get; set; }
         public string ProductId { get; set; }
         public string BranchId { get; set; }
-
+        public string CustomerName { get; set; }
 
     }
 }
