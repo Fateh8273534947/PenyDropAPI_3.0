@@ -51,8 +51,11 @@ namespace PenyDropAPI_3._0.Controllers
                         return res;
                     }
                 }
-
-                DataSet DSGlobal = GetData.GetSetpData(ClientEncrptionClass.DecryptAESEncEndToEnd(ul.AppID), ClientEncrptionClass.DecryptAESEncEndToEnd(ul.MerchantKey), ul.IFSC, ul.BankCode);
+                if (ul.UserId != null && ul.TokenId != "")
+                {
+                    ul.UserId = ClientEncrptionClass.DecryptAESEncEndToEnd(ul.UserId);
+                }
+                DataSet DSGlobal = GetData.GetSetpData(ClientEncrptionClass.DecryptAESEncEndToEnd(ul.AppID), ClientEncrptionClass.DecryptAESEncEndToEnd(ul.MerchantKey), ul.IFSC, ul.BankCode,ul.UserId,ul.TokenId);
                 if (DSGlobal == null)
                 {
                     res.Message = "Invalid MerchantKey";
@@ -66,6 +69,23 @@ namespace PenyDropAPI_3._0.Controllers
                     res.Status = "Failure";
                     res.ResCode = "AccErr001";
                     return res;
+                }
+                if (ul.UserId != "" && ul.UserId != null)
+                {
+                    if (Convert.ToString(DSGlobal.Tables[2].Rows[0][0]) == "2")
+                    {
+                        res.Message = "Session expired please login again";
+                        res.Status = "Failure";
+                        res.ResCode = "AccErr003";
+                        return res;
+                    }
+                    if (DSGlobal.Tables[3].Rows.Count == 0)
+                    {
+                        res.Message = "Mandatory Data blank or invalid";
+                        res.Status = "Failure";
+                        res.ResCode = "AccErr003";
+                        return res;
+                    }
                 }
                 if (DSGlobal.Tables[1].Rows.Count > 0)
                 {

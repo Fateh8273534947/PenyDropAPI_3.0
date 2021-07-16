@@ -37,6 +37,8 @@ namespace PenyDropAPI_3._0.Models
         public string MerchantKey { get; set; }
         public string IFSC { get; set; }
         public string BankCode { get; set; }
+        public string UserId { get; set; }
+        public string TokenId { get; set; }
     }
     public class InputAcvalClass
     {
@@ -48,6 +50,7 @@ namespace PenyDropAPI_3._0.Models
         public string ProductId { get; set; }
         public string BranchId { get; set; }
         public string CustomerName { get; set; }
-
+        public string UserId { get; set; }
+        public string TokenId { get; set; }
     }
 }
