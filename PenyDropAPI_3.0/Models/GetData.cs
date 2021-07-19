@@ -9,7 +9,7 @@ namespace PenyDropAPI_3._0.Models
 {
     public class GetData
     {
-        public static DataSet GetSetpData(string AppId, string EnitityMarchantKey, string IFSC, string BankCode, string ProductName, string BranchName,string RefNO)
+        public static DataSet GetSetpData(string AppId, string EnitityMarchantKey, string IFSC, string BankCode, string ProductName, string BranchName, string RefNO, string UserId, string TokenId)
         {
             DataSet dsData = new DataSet();
             SqlConnection con = new SqlConnection(GlobalMethods.GlobalClass.connectionString);
@@ -24,12 +24,14 @@ namespace PenyDropAPI_3._0.Models
             cmd.Parameters.AddWithValue("@ProductName", ProductName);
             cmd.Parameters.AddWithValue("@BranchName", BranchName);
             cmd.Parameters.AddWithValue("@RefNo", RefNO);
+            cmd.Parameters.AddWithValue("@UserId", UserId);
+            cmd.Parameters.AddWithValue("@TokenId", TokenId);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(dsData);
             return dsData;
 
         }
-        public static DataSet GetSetpData(string AppId, string EnitityMarchantKey, string IFSC, string BankCode)
+        public static DataSet GetSetpData(string AppId, string EnitityMarchantKey, string IFSC, string BankCode, string UserId, string TokenId)
         {
             DataSet dsData = new DataSet();
             SqlConnection con = new SqlConnection(GlobalMethods.GlobalClass.connectionString);
@@ -41,6 +43,8 @@ namespace PenyDropAPI_3._0.Models
             cmd.Parameters.AddWithValue("@AppId", AppId);
             cmd.Parameters.AddWithValue("@IFSC", IFSC);
             cmd.Parameters.AddWithValue("@BankCode", BankCode);
+            cmd.Parameters.AddWithValue("@UserId", UserId);
+            cmd.Parameters.AddWithValue("@TokenId", TokenId);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(dsData);
             return dsData;

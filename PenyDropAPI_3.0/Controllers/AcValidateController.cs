@@ -60,7 +60,7 @@ namespace PenyDropAPI_3._0.Controllers
                 res.ResCode = "AccErr003";
                 return res;
             }
-            if (ul.CustomerName.Length>40)
+            if (ul.CustomerName.Length > 40)
             {
                 res.Message = "Mandatory Data blank";
                 res.Status = "Failure";
@@ -76,7 +76,11 @@ namespace PenyDropAPI_3._0.Controllers
             }
             string UserId = "";
             string EntityId = "";
-            DataSet DSGlobal = GetData.GetSetpData(ClientEncrptionClass.DecryptAESEncEndToEnd(ul.AppID), ClientEncrptionClass.DecryptAESEncEndToEnd(ul.MerchantKey), ul.IFSC, "", ul.ProductId, ul.BranchId, ul.TrxRef);
+            if (ul.UserId != null && ul.TokenId != "")
+            {
+                ul.UserId = ClientEncrptionClass.DecryptAESEncEndToEnd(ul.UserId);
+            }
+            DataSet DSGlobal = GetData.GetSetpData(ClientEncrptionClass.DecryptAESEncEndToEnd(ul.AppID), ClientEncrptionClass.DecryptAESEncEndToEnd(ul.MerchantKey), ul.IFSC, "", ul.ProductId, ul.BranchId, ul.TrxRef, ul.UserId,ul.TokenId);
             if (DSGlobal == null)
             {
                 res.Message = "Invalid MerchantKey";
@@ -86,8 +90,32 @@ namespace PenyDropAPI_3._0.Controllers
             }
             if (DSGlobal.Tables[0].Rows.Count > 0)
             {
-                UserId = DSGlobal.Tables[0].Rows[0]["UserId"].ToString();
+                if (ul.UserId == null || ul.UserId == "")
+                {
+                    UserId = DSGlobal.Tables[0].Rows[0]["UserId"].ToString();
+                }
+                else
+                {
+                    UserId = ul.UserId;
+                }
                 EntityId = Convert.ToString(DSGlobal.Tables[0].Rows[0]["EntityId"]);
+            }
+            if (ul.UserId != "" && ul.UserId != null)
+            {
+                if (Convert.ToString(DSGlobal.Tables[7].Rows[0][0]) == "2")
+                {
+                    res.Message = "Session expired please login again";
+                    res.Status = "Failure";
+                    res.ResCode = "AccErr003";
+                    return res;
+                }
+                if (DSGlobal.Tables[8].Rows.Count == 0)
+                {
+                    res.Message = "Mandatory Data blank or invalid";
+                    res.Status = "Failure";
+                    res.ResCode = "AccErr003";
+                    return res;
+                }
             }
             if (DSGlobal != null && DSGlobal.Tables[0].Rows.Count == 0)
             {
@@ -121,7 +149,7 @@ namespace PenyDropAPI_3._0.Controllers
             DataTable dt = obj.AccountVal_Kotak(Convert.ToString(DSGlobal.Tables[6].Rows[0][0]), ClientEncrptionClass.DecryptAESEncEndToEnd(ul.BankAc), ul.IFSC, ClientEncrptionClass.DecryptAESEncEndToEnd(ul.AppID), Convert.ToString(DSGlobal.Tables[1].Rows[0]["APIURL"]), Convert.ToString(DSGlobal.Tables[1].Rows[0]["APIKey"]), Convert.ToString(DSGlobal.Tables[1].Rows[0]["APIBankName"]), UserId, EntityId, ul.TrxRef);
             if (dt.Rows.Count > 0)
             {
-                if(ul.CustomerName.Length>20 && Convert.ToString(dt.Rows[0]["BankReturnCustNme"])!="")
+                if (ul.CustomerName.Length > 20 && Convert.ToString(dt.Rows[0]["BankReturnCustNme"]) != "")
                 {
                     res.Message = "Account Validated and NAME Validation is upto 20 char only incase more than 20 char match first 20 char and take informed decission";
                     res.Status = "Success";
@@ -135,7 +163,7 @@ namespace PenyDropAPI_3._0.Controllers
                     res.CustomerNameAsPerBank = Convert.ToString(dt.Rows[0]["BankReturnCustNme"]);
                     return res;
                 }
-                if(ul.CustomerName.ToUpper() != Convert.ToString(dt.Rows[0]["BankReturnCustNme"]).ToUpper())
+                if (ul.CustomerName.ToUpper() != Convert.ToString(dt.Rows[0]["BankReturnCustNme"]).ToUpper())
                 {
                     res.Message = "Account validated but name mismatch";
                     res.Status = "Success";
